@@ -1,0 +1,9 @@
+[build] 收集 Hadoop 依赖 classpath ...
+[build] 待编译的源文件：
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/src/main/java/edu/sdu/bigdata/mr/GrandParent.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/src/main/java/edu/sdu/bigdata/mr/MergeDedup.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/src/main/java/edu/sdu/bigdata/mr/MrLab.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/src/main/java/edu/sdu/bigdata/mr/SortAndRank.java
+[build] 打包 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/build/mr-lab.jar
+[build] 完成：/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/build/mr-lab.jar
+-rw-rw-r-- 1 yxy yxy 11886 10月  2 00:27 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/build/mr-lab.jar

@@ -1,0 +1,346 @@
+############################################################
+#  实验一 第 3 部分：MapReduce 初级编程
+#  运行模式: yarn
+#  HDFS 实验根目录: /user/yxy/mr-lab
+#  执行时间: 2026-10-02 00:27:09
+############################################################
+
+================================================================================
+# 题目1：文件的合并和去重
+================================================================================
+$ hdfs dfs -rm -r -f /user/yxy/mr-lab/dedup-input /user/yxy/mr-lab/dedup-output
+$ hdfs dfs -put /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/input/dedup /user/yxy/mr-lab/dedup-input
+-- HDFS 上的输入文件：
+Found 2 items
+-rw-r--r--   1 yxy supergroup         66 2026-10-02 00:27 /user/yxy/mr-lab/dedup-input/A.txt
+-rw-r--r--   1 yxy supergroup         55 2026-10-02 00:27 /user/yxy/mr-lab/dedup-input/B.txt
+
+$ hadoop jar mr-lab.jar dedup /user/yxy/mr-lab/dedup-input /user/yxy/mr-lab/dedup-output
+######## 题目1：文件的合并和去重 ########
+2026-10-02 00:27:15,782 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at localhost/127.0.0.1:8032
+2026-10-02 00:27:15,977 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+2026-10-02 00:27:16,019 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/yxy/.staging/job_1790871965624_0002
+2026-10-02 00:27:16,211 INFO input.FileInputFormat: Total input files to process : 2
+2026-10-02 00:27:16,272 INFO mapreduce.JobSubmitter: number of splits:2
+2026-10-02 00:27:16,821 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1790871965624_0002
+2026-10-02 00:27:16,821 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2026-10-02 00:27:16,913 INFO conf.Configuration: resource-types.xml not found
+2026-10-02 00:27:16,914 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2026-10-02 00:27:16,951 INFO impl.YarnClientImpl: Submitted application application_1790871965624_0002
+2026-10-02 00:27:16,969 INFO mapreduce.Job: The url to track the job: http://ubuntu22.04.myguest.virtualbox.org:8088/proxy/application_1790871965624_0002/
+2026-10-02 00:27:16,970 INFO mapreduce.Job: Running job: job_1790871965624_0002
+2026-10-02 00:27:22,076 INFO mapreduce.Job: Job job_1790871965624_0002 running in uber mode : false
+2026-10-02 00:27:22,077 INFO mapreduce.Job:  map 0% reduce 0%
+2026-10-02 00:27:26,141 INFO mapreduce.Job:  map 50% reduce 0%
+2026-10-02 00:27:28,158 INFO mapreduce.Job:  map 100% reduce 0%
+2026-10-02 00:27:31,220 INFO mapreduce.Job:  map 100% reduce 100%
+2026-10-02 00:27:33,245 INFO mapreduce.Job: Job job_1790871965624_0002 completed successfully
+2026-10-02 00:27:33,339 INFO mapreduce.Job: Counters: 54
+	File System Counters
+		FILE: Number of bytes read=149
+		FILE: Number of bytes written=832053
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=361
+		HDFS: Number of bytes written=99
+		HDFS: Number of read operations=11
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+		HDFS: Number of bytes read erasure-coded=0
+	Job Counters 
+		Launched map tasks=2
+		Launched reduce tasks=1
+		Data-local map tasks=2
+		Total time spent by all maps in occupied slots (ms)=7112
+		Total time spent by all reduces in occupied slots (ms)=4394
+		Total time spent by all map tasks (ms)=3556
+		Total time spent by all reduce tasks (ms)=2197
+		Total vcore-milliseconds taken by all map tasks=3556
+		Total vcore-milliseconds taken by all reduce tasks=2197
+		Total megabyte-milliseconds taken by all map tasks=3641344
+		Total megabyte-milliseconds taken by all reduce tasks=2249728
+	Map-Reduce Framework
+		Map input records=11
+		Map output records=11
+		Map output bytes=121
+		Map output materialized bytes=155
+		Input split bytes=240
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=9
+		Reduce shuffle bytes=155
+		Reduce input records=11
+		Reduce output records=9
+		Spilled Records=22
+		Shuffled Maps =2
+		Failed Shuffles=0
+		Merged Map outputs=2
+		GC time elapsed (ms)=111
+		CPU time spent (ms)=1450
+		Physical memory (bytes) snapshot=760025088
+		Virtual memory (bytes) snapshot=8287117312
+		Total committed heap usage (bytes)=653262848
+		Peak Map Physical memory (bytes)=264638464
+		Peak Map Virtual memory (bytes)=2756640768
+		Peak Reduce Physical memory (bytes)=232804352
+		Peak Reduce Virtual memory (bytes)=2776928256
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=121
+	File Output Format Counters 
+		Bytes Written=99
+作业执行成功：/user/yxy/mr-lab/dedup-output
+
+-- 作业输出目录：
+Found 2 items
+-rw-r--r--   1 yxy supergroup          0 2026-10-02 00:27 /user/yxy/mr-lab/dedup-output/_SUCCESS
+-rw-r--r--   1 yxy supergroup         99 2026-10-02 00:27 /user/yxy/mr-lab/dedup-output/part-r-00000
+-- 运行结果（part-r-00000）：
+20170101	x
+20170101	y
+20170102	y
+20170103	x
+20170104	y
+20170104	z
+20170105	y
+20170105	z
+20170106	x
+
+-- 与 expected/dedup.txt 比对：
+【一致】输出与标准答案完全相同
+
+================================================================================
+# 题目2：对输入文件进行排序
+================================================================================
+$ hdfs dfs -rm -r -f /user/yxy/mr-lab/sort-input /user/yxy/mr-lab/sort-output
+$ hdfs dfs -put /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/input/sort /user/yxy/mr-lab/sort-input
+-- HDFS 上的输入文件：
+Found 3 items
+-rw-r--r--   1 yxy supergroup         12 2026-10-02 00:27 /user/yxy/mr-lab/sort-input/file1.txt
+-rw-r--r--   1 yxy supergroup         10 2026-10-02 00:27 /user/yxy/mr-lab/sort-input/file2.txt
+-rw-r--r--   1 yxy supergroup          8 2026-10-02 00:27 /user/yxy/mr-lab/sort-input/file3.txt
+
+$ hadoop jar mr-lab.jar sort /user/yxy/mr-lab/sort-input /user/yxy/mr-lab/sort-output
+######## 题目2：对输入文件进行排序 ########
+2026-10-02 00:27:44,612 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at localhost/127.0.0.1:8032
+2026-10-02 00:27:44,801 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+2026-10-02 00:27:44,852 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/yxy/.staging/job_1790871965624_0003
+2026-10-02 00:27:45,018 INFO input.FileInputFormat: Total input files to process : 3
+2026-10-02 00:27:45,487 INFO mapreduce.JobSubmitter: number of splits:3
+2026-10-02 00:27:46,005 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1790871965624_0003
+2026-10-02 00:27:46,006 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2026-10-02 00:27:46,103 INFO conf.Configuration: resource-types.xml not found
+2026-10-02 00:27:46,103 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2026-10-02 00:27:46,138 INFO impl.YarnClientImpl: Submitted application application_1790871965624_0003
+2026-10-02 00:27:46,156 INFO mapreduce.Job: The url to track the job: http://ubuntu22.04.myguest.virtualbox.org:8088/proxy/application_1790871965624_0003/
+2026-10-02 00:27:46,157 INFO mapreduce.Job: Running job: job_1790871965624_0003
+2026-10-02 00:27:51,260 INFO mapreduce.Job: Job job_1790871965624_0003 running in uber mode : false
+2026-10-02 00:27:51,261 INFO mapreduce.Job:  map 0% reduce 0%
+2026-10-02 00:27:54,330 INFO mapreduce.Job:  map 33% reduce 0%
+2026-10-02 00:27:56,359 INFO mapreduce.Job:  map 67% reduce 0%
+2026-10-02 00:27:58,382 INFO mapreduce.Job:  map 100% reduce 0%
+2026-10-02 00:28:00,396 INFO mapreduce.Job:  map 100% reduce 100%
+2026-10-02 00:28:02,428 INFO mapreduce.Job: Job job_1790871965624_0003 completed successfully
+2026-10-02 00:28:02,490 INFO mapreduce.Job: Counters: 54
+	File System Counters
+		FILE: Number of bytes read=72
+		FILE: Number of bytes written=1109209
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=399
+		HDFS: Number of bytes written=54
+		HDFS: Number of read operations=14
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+		HDFS: Number of bytes read erasure-coded=0
+	Job Counters 
+		Launched map tasks=3
+		Launched reduce tasks=1
+		Data-local map tasks=3
+		Total time spent by all maps in occupied slots (ms)=7982
+		Total time spent by all reduces in occupied slots (ms)=3254
+		Total time spent by all map tasks (ms)=3991
+		Total time spent by all reduce tasks (ms)=1627
+		Total vcore-milliseconds taken by all map tasks=3991
+		Total vcore-milliseconds taken by all reduce tasks=1627
+		Total megabyte-milliseconds taken by all map tasks=4086784
+		Total megabyte-milliseconds taken by all reduce tasks=1666048
+	Map-Reduce Framework
+		Map input records=11
+		Map output records=11
+		Map output bytes=44
+		Map output materialized bytes=84
+		Input split bytes=369
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=11
+		Reduce shuffle bytes=84
+		Reduce input records=11
+		Reduce output records=11
+		Spilled Records=22
+		Shuffled Maps =3
+		Failed Shuffles=0
+		Merged Map outputs=3
+		GC time elapsed (ms)=101
+		CPU time spent (ms)=1270
+		Physical memory (bytes) snapshot=980238336
+		Virtual memory (bytes) snapshot=11006558208
+		Total committed heap usage (bytes)=795869184
+		Peak Map Physical memory (bytes)=257437696
+		Peak Map Virtual memory (bytes)=2750746624
+		Peak Reduce Physical memory (bytes)=220553216
+		Peak Reduce Virtual memory (bytes)=2758021120
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=30
+	File Output Format Counters 
+		Bytes Written=54
+作业执行成功：/user/yxy/mr-lab/sort-output
+
+-- 作业输出目录：
+Found 2 items
+-rw-r--r--   1 yxy supergroup          0 2026-10-02 00:27 /user/yxy/mr-lab/sort-output/_SUCCESS
+-rw-r--r--   1 yxy supergroup         54 2026-10-02 00:27 /user/yxy/mr-lab/sort-output/part-r-00000
+-- 运行结果（part-r-00000）：
+1	1
+2	4
+3	5
+4	12
+5	16
+6	25
+7	33
+8	37
+9	39
+10	40
+11	45
+
+-- 与 expected/sort.txt 比对：
+【一致】输出与标准答案完全相同
+
+================================================================================
+# 题目3：child-parent 表信息挖掘
+================================================================================
+$ hdfs dfs -rm -r -f /user/yxy/mr-lab/grandparent-input /user/yxy/mr-lab/grandparent-output
+$ hdfs dfs -put /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/input/grandparent /user/yxy/mr-lab/grandparent-input
+-- HDFS 上的输入文件：
+Found 1 items
+-rw-r--r--   1 yxy supergroup        157 2026-10-02 00:28 /user/yxy/mr-lab/grandparent-input/child-parent.txt
+
+$ hadoop jar mr-lab.jar grandparent /user/yxy/mr-lab/grandparent-input /user/yxy/mr-lab/grandparent-output
+######## 题目3：child-parent 表的信息挖掘 ########
+2026-10-02 00:28:13,209 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at localhost/127.0.0.1:8032
+2026-10-02 00:28:13,419 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+2026-10-02 00:28:13,445 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/yxy/.staging/job_1790871965624_0004
+2026-10-02 00:28:13,655 INFO input.FileInputFormat: Total input files to process : 1
+2026-10-02 00:28:13,704 INFO mapreduce.JobSubmitter: number of splits:1
+2026-10-02 00:28:14,222 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1790871965624_0004
+2026-10-02 00:28:14,222 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2026-10-02 00:28:14,321 INFO conf.Configuration: resource-types.xml not found
+2026-10-02 00:28:14,321 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2026-10-02 00:28:14,353 INFO impl.YarnClientImpl: Submitted application application_1790871965624_0004
+2026-10-02 00:28:14,372 INFO mapreduce.Job: The url to track the job: http://ubuntu22.04.myguest.virtualbox.org:8088/proxy/application_1790871965624_0004/
+2026-10-02 00:28:14,373 INFO mapreduce.Job: Running job: job_1790871965624_0004
+2026-10-02 00:28:18,432 INFO mapreduce.Job: Job job_1790871965624_0004 running in uber mode : false
+2026-10-02 00:28:18,434 INFO mapreduce.Job:  map 0% reduce 0%
+2026-10-02 00:28:22,529 INFO mapreduce.Job:  map 100% reduce 0%
+2026-10-02 00:28:25,559 INFO mapreduce.Job:  map 100% reduce 100%
+2026-10-02 00:28:26,589 INFO mapreduce.Job: Job job_1790871965624_0004 completed successfully
+2026-10-02 00:28:26,647 INFO mapreduce.Job: Counters: 54
+	File System Counters
+		FILE: Number of bytes read=404
+		FILE: Number of bytes written=555279
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=294
+		HDFS: Number of bytes written=142
+		HDFS: Number of read operations=8
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+		HDFS: Number of bytes read erasure-coded=0
+	Job Counters 
+		Launched map tasks=1
+		Launched reduce tasks=1
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=2832
+		Total time spent by all reduces in occupied slots (ms)=2928
+		Total time spent by all map tasks (ms)=1416
+		Total time spent by all reduce tasks (ms)=1464
+		Total vcore-milliseconds taken by all map tasks=1416
+		Total vcore-milliseconds taken by all reduce tasks=1464
+		Total megabyte-milliseconds taken by all map tasks=1449984
+		Total megabyte-milliseconds taken by all reduce tasks=1499136
+	Map-Reduce Framework
+		Map input records=14
+		Map output records=28
+		Map output bytes=342
+		Map output materialized bytes=404
+		Input split bytes=137
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=12
+		Reduce shuffle bytes=404
+		Reduce input records=28
+		Reduce output records=12
+		Spilled Records=56
+		Shuffled Maps =1
+		Failed Shuffles=0
+		Merged Map outputs=1
+		GC time elapsed (ms)=39
+		CPU time spent (ms)=680
+		Physical memory (bytes) snapshot=507543552
+		Virtual memory (bytes) snapshot=5511966720
+		Total committed heap usage (bytes)=440401920
+		Peak Map Physical memory (bytes)=274882560
+		Peak Map Virtual memory (bytes)=2756009984
+		Peak Reduce Physical memory (bytes)=232660992
+		Peak Reduce Virtual memory (bytes)=2755956736
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=157
+	File Output Format Counters 
+		Bytes Written=142
+作业执行成功：/user/yxy/mr-lab/grandparent-output
+
+-- 作业输出目录：
+Found 2 items
+-rw-r--r--   1 yxy supergroup          0 2026-10-02 00:28 /user/yxy/mr-lab/grandparent-output/_SUCCESS
+-rw-r--r--   1 yxy supergroup        142 2026-10-02 00:28 /user/yxy/mr-lab/grandparent-output/part-r-00000
+-- 运行结果（part-r-00000）：
+Mark	Jesse
+Mark	Alice
+Philip	Jesse
+Philip	Alice
+Jone	Jesse
+Jone	Alice
+Steven	Jesse
+Steven	Alice
+Steven	Frank
+Steven	Mary
+Jone	Frank
+Jone	Mary
+
+-- 与 expected/grandparent.txt 比对：
+【一致】输出与标准答案完全相同
+
+[run] 三个作业全部完成，日志：/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part3-mapreduce/logs/mr.log （共 345 行）

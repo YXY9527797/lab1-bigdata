@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  mapred-site.xml —— MapReduce 运行框架配置
+  framework.name = yarn：作业提交到本机 YARN 上以容器方式执行；
+  若要单进程本地调试，可临时改为 local（见 part3-mapreduce/run.sh 的 local 参数）
+-->
+<configuration>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.env</name>
+    <value>HADOOP_MAPRED_HOME=@HADOOP_HOME@</value>
+  </property>
+  <property>
+    <name>mapreduce.map.env</name>
+    <value>HADOOP_MAPRED_HOME=@HADOOP_HOME@</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.env</name>
+    <value>HADOOP_MAPRED_HOME=@HADOOP_HOME@</value>
+  </property>
+  <!--
+    显式指定 UTF-8 编码。本实验目录路径包含中文（“文档”），容器 JVM 若按
+    ASCII 编码解析路径，会把中文变成 '?'，从而无法创建容器日志/工作目录。
+  -->
+  <property>
+    <name>yarn.app.mapreduce.am.command-opts</name>
+    <value>-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8</value>
+  </property>
+  <property>
+    <name>mapreduce.map.java.opts</name>
+    <value>-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.java.opts</name>
+    <value>-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8</value>
+  </property>
+</configuration>

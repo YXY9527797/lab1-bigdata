@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  core-site.xml —— Hadoop 公共配置（由 env/setup-env.sh 从本模板生成）
+  fs.defaultFS 指定默认文件系统为本地单节点 HDFS（NameNode RPC 端口 9000）
+-->
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://localhost:9000</value>
+  </property>
+  <!-- 所有 Hadoop 临时文件的根目录，放在实验目录内，避免污染系统 /tmp -->
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>@LAB_ROOT@/env/tmp</value>
+  </property>
+  <!-- 关闭 HDFS 回收站，删除操作立即生效，便于实验观察 -->
+  <property>
+    <name>fs.trash.interval</name>
+    <value>0</value>
+  </property>
+</configuration>

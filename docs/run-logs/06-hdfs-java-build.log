@@ -1,0 +1,17 @@
+[build] 收集 Hadoop 依赖 classpath ...
+[build] classpath 长度：435 字符
+[build] 待编译的源文件：
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/AppendContent.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/CatFile.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/CreateDeleteDir.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/CreateDeleteFile.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/DeleteFile.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/DownloadFile.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/FileInfo.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/HdfsLab.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/HdfsUtil.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/MoveFile.java
+/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/src/main/java/edu/sdu/bigdata/hdfs/UploadFile.java
+[build] 打包 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/build/hdfs-lab.jar
+[build] 完成：/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/build/hdfs-lab.jar
+-rw-rw-r-- 1 yxy yxy 21326 10月  2 00:21 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/java/build/hdfs-lab.jar

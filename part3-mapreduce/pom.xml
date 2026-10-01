@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  实验一 第 3 部分：MapReduce 初级编程的 Maven 构建文件。
+
+  仓库里同时提供了不依赖 Maven 的 part3-mapreduce/build.sh（javac + `hadoop classpath`
+  直接打成 mr-lab.jar），无网络/无 Maven 的环境用那个即可。本文件供有 Maven 的环境使用：
+      mvn -q clean package
+      hadoop jar target/mr-lab.jar dedup <输入目录> <输出目录>
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>edu.sdu.bigdata</groupId>
+  <artifactId>mr-lab</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <name>大数据管理与分析 实验一 - MapReduce 初级编程</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>8</maven.compiler.release>
+    <hadoop.version>3.3.6</hadoop.version>
+  </properties>
+
+  <dependencies>
+    <!-- 集群环境里由 `hadoop classpath` 提供，故 scope 用 provided -->
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>${hadoop.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>mr-lab</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>edu.sdu.bigdata.mr.MrLab</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

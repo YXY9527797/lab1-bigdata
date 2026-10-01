@@ -1,0 +1,163 @@
+################ 集群守护进程（jps） ################
+# 说明：NameNode/DataNode/ResourceManager/NodeManager 启动在集群后台作业
+#       自己的 PID 命名空间内，其它会话中的 jps 看不到它们；下面这份输出是
+#       集群启动时在同一命名空间内采集并落盘的（env/logs/jps-startup.txt）。
+# 由 env/run-cluster.sh 在集群所在命名空间内采集： 2026-10-02 00:17:04
+$ jps -l
+625 jdk.jcmd/sun.tools.jps.Jps
+468 org.apache.hadoop.yarn.server.nodemanager.NodeManager
+11 org.apache.hadoop.hdfs.server.namenode.NameNode
+110 org.apache.hadoop.hdfs.server.datanode.DataNode
+111 org.apache.hadoop.yarn.server.resourcemanager.ResourceManager
+
+$ hdfs dfsadmin -safemode get
+Safe mode is OFF
+
+$ yarn node -list
+Total Nodes:1
+         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+ubuntu22.04.myguest.virtualbox.org:46171	        RUNNING	ubuntu22.04.myguest.virtualbox.org:8042	                           0
+################ 实验一 · Hadoop（HDFS）基本操作 ################
+操作身份 (HADOOP_USER_NAME) : yxy
+HDFS 地址                    : hdfs://localhost:9000
+本地主目录                  : /home/yxy
+
+────────────────────────────────────────────────────────────────────────
+【1】以 hadoop 用户登录并启动 Hadoop，为 hadoop 用户创建 HDFS 用户目录 /user/hadoop
+────────────────────────────────────────────────────────────────────────
+教材中的标准操作步骤（在装有 Hadoop 的 Linux 机器上）：
+    $ su - hadoop                    # 以 hadoop 用户登录（或直接以 hadoop 用户登录系统）
+    $ start-dfs.sh                   # 启动 HDFS：NameNode + DataNode + SecondaryNameNode
+    $ start-yarn.sh                  # 启动 YARN：ResourceManager + NodeManager
+    $ jps                            # 确认守护进程都已起来
+
+-- 确认本机 Hadoop 集群已经启动（以 HDFS 报告为准，可直接反映 DataNode 存活情况）
+$ hdfs dfsadmin -report
+Configured Capacity: 25709252608 (23.94 GB)
+Present Capacity: 4838113191 (4.51 GB)
+DFS Remaining: 4838080512 (4.51 GB)
+DFS Used: 32679 (31.91 KB)
+DFS Used%: 0.00%
+Replicated Blocks:
+	Under replicated blocks: 0
+	Blocks with corrupt replicas: 0
+	Missing blocks: 0
+	Missing blocks (with replication factor 1): 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+Erasure Coded Block Groups: 
+	Low redundancy block groups: 0
+	Block groups with corrupt internal blocks: 0
+	Missing block groups: 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+
+-------------------------------------------------
+Live datanodes (1):
+
+Name: 127.0.0.1:9866 (localhost)
+Hostname: ubuntu22.04.myguest.virtualbox.org
+Decommission Status : Normal
+Configured Capacity: 25709252608 (23.94 GB)
+DFS Used: 32679 (31.91 KB)
+Non DFS Used: 19539239001 (18.20 GB)
+DFS Remaining: 4838080512 (4.51 GB)
+DFS Used%: 0.00%
+DFS Remaining%: 18.82%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Fri Oct 02 00:18:07 CST 2026
+Last Block Report: Fri Oct 02 00:16:49 CST 2026
+Num of Blocks: 1
+
+
+
+-- 确认 YARN 节点状态
+$ yarn node -list
+2026-10-02 00:18:11,201 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at localhost/127.0.0.1:8032
+Total Nodes:1
+         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+ubuntu22.04.myguest.virtualbox.org:46171	        RUNNING	ubuntu22.04.myguest.virtualbox.org:8042	                           0
+
+-- 为 hadoop 用户创建 HDFS 用户目录 /user/hadoop
+$ hdfs dfs -mkdir -p /user/hadoop
+$ hdfs dfs -chown hadoop:supergroup /user/hadoop    # 属主改为 hadoop 用户
+$ hdfs dfs -ls -d /user/hadoop
+drwxr-xr-x   - hadoop supergroup          0 2026-10-02 00:17 /user/hadoop
+
+────────────────────────────────────────────────────────────────────────
+【2】在 /user/hadoop 下创建 test 文件夹，并查看文件列表
+────────────────────────────────────────────────────────────────────────
+$ hdfs dfs -mkdir -p /user/hadoop/test
+$ hdfs dfs -ls /user/hadoop
+Found 1 items
+drwxr-xr-x   - yxy supergroup          0 2026-10-02 00:17 /user/hadoop/test
+
+-- 递归查看 /user/hadoop 下的目录树
+$ hdfs dfs -ls -R /user/hadoop
+drwxr-xr-x   - yxy supergroup          0 2026-10-02 00:17 /user/hadoop/test
+-rw-r--r--   1 yxy supergroup       3968 2026-10-02 00:17 /user/hadoop/test/.bashrc
+
+────────────────────────────────────────────────────────────────────────
+【3】把本地 ~/.bashrc 上传到 HDFS 的 test 文件夹中，并查看 test
+────────────────────────────────────────────────────────────────────────
+本地待上传文件：/home/yxy/.bashrc （121 行，3968 字节）
+$ hdfs dfs -put -f /home/yxy/.bashrc /user/hadoop/test
+
+$ hdfs dfs -ls /user/hadoop/test
+Found 1 items
+-rw-r--r--   1 yxy supergroup       3968 2026-10-02 00:18 /user/hadoop/test/.bashrc
+
+-- 校验：HDFS 上文件与本地文件内容一致（比较 MD5）
+本地 : dacd0a2d71506e39140b00bcdf3007eb
+HDFS : dacd0a2d71506e39140b00bcdf3007eb
+
+-- 查看 HDFS 上该文件的前 5 行
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+
+────────────────────────────────────────────────────────────────────────
+【4】把 HDFS 文件夹 test 复制到本地文件系统的 /usr/local/hadoop 目录下
+────────────────────────────────────────────────────────────────────────
+$ hdfs dfs -get /user/hadoop/test /usr/local/hadoop
+$ hdfs dfs -get /user/hadoop/test /usr/local/hadoop
+
+-- 查看本地结果
+$ ls -l /usr/local/hadoop
+总计 116
+drwxr-xr-x 2 nobody nogroup  4096  6月 18  2023 bin
+drwxr-xr-x 3 nobody nogroup  4096  6月 18  2023 etc
+drwxr-xr-x 2 nobody nogroup  4096  6月 18  2023 include
+drwxr-xr-x 3 nobody nogroup  4096  6月 18  2023 lib
+drwxr-xr-x 4 nobody nogroup  4096  6月 18  2023 libexec
+-rw-rw-r-- 1 nobody nogroup 24276  6月 14  2023 LICENSE-binary
+drwxr-xr-x 2 nobody nogroup  4096  6月 18  2023 licenses-binary
+-rw-rw-r-- 1 nobody nogroup 15217  6月 10  2023 LICENSE.txt
+drwxrwxr-x 3 nobody nogroup  4096  9月  9 13:59 logs
+-rw-rw-r-- 1 nobody nogroup 29473  6月 10  2023 NOTICE-binary
+-rw-rw-r-- 1 nobody nogroup  1541  6月 10  2023 NOTICE.txt
+-rw-rw-r-- 1 nobody nogroup   175  6月 10  2023 README.txt
+drwxr-xr-x 3 nobody nogroup  4096  6月 18  2023 sbin
+drwxr-xr-x 4 nobody nogroup  4096  6月 18  2023 share
+drwxr-xr-x 2 root   root       60 10月  2 00:18 test
+$ ls -la /usr/local/hadoop/test      # -a 才能看到 .bashrc 这个隐藏文件
+$ ls -la /usr/local/hadoop/test
+总计 4
+drwxr-xr-x  2 root root   60 10月  2 00:18 .
+drwxrwxr-x 12 root root  340 10月  2 00:18 ..
+-rw-r--r--  1 root root 3968 10月  2 00:18 .bashrc
+
+-- 校验：本地副本与 HDFS 上文件一致
+HDFS : dacd0a2d71506e39140b00bcdf3007eb
+本地 : dacd0a2d71506e39140b00bcdf3007eb
+
+────────────────────────────────────────────────────────────────────────
+Hadoop（HDFS）基本操作全部题目执行完毕。
+────────────────────────────────────────────────────────────────────────

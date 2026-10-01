@@ -1,0 +1,33 @@
+# ---- Hadoop 运行时产物（由 env/setup-env.sh 生成 / 集群运行时产生）----------
+env/hadoop-conf/
+env/hadoopdata/
+env/tmp/
+env/logs/
+env/pids/
+env/yarn/
+
+# ---- 编译产物 -------------------------------------------------------------
+part2-hdfs/java/build/
+part3-mapreduce/build/
+target/
+*.class
+*.jar
+!part1-linux-hadoop/logs/.keep
+
+# ---- 运行时的本地下载目录与日志（日志已归档到 docs/run-logs/）--------------
+part2-hdfs/local-shell/
+part2-hdfs/local-java/
+part2-hdfs/logs/
+part1-linux-hadoop/logs/
+part3-mapreduce/logs/
+logs/
+
+# ---- 报告构建中间产物 -----------------------------------------------------
+report/build/
+
+# ---- 编辑器 / 系统 --------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  实验一 第 2 部分：HDFS Java API 实验的 Maven 构建文件。
+
+  说明：仓库里同时提供了不依赖 Maven 的 java/build.sh（直接用 javac +
+  `hadoop classpath` 编译并打成 hdfs-lab.jar），无网络/无 Maven 的环境用那个即可。
+  本文件供有 Maven 的环境使用：
+      mvn -q clean package
+      java -cp target/hdfs-lab.jar:$(hadoop classpath) edu.sdu.bigdata.hdfs.HdfsLab info /user/hadoop/test/.bashrc
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>edu.sdu.bigdata</groupId>
+  <artifactId>hdfs-lab</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <name>大数据管理与分析 实验一 - HDFS 常用操作 Java API</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>8</maven.compiler.release>
+    <hadoop.version>3.3.6</hadoop.version>
+  </properties>
+
+  <dependencies>
+    <!-- Hadoop 客户端；集群环境里由 `hadoop classpath` 提供，故 scope 用 provided -->
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>${hadoop.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>hdfs-lab</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>edu.sdu.bigdata.hdfs.HdfsLab</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

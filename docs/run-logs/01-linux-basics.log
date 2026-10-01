@@ -1,0 +1,808 @@
+################ 实验一 · Linux 常用操作 ################
+执行用户 : root   uid=0
+用户主目录: /home/yxy
+当前目录 : /home/yxy
+系统信息 : Linux 6.8.0-40-generic x86_64
+发行版本 : Ubuntu 22.04.5 LTS
+
+────────────────────────────────────────────────────────────────────────
+【1】cd 命令：切换目录
+────────────────────────────────────────────────────────────────────────
+-- (1) 切换到目录 /usr/local
+$ cd /usr/local
+当前目录：/usr/local
+
+-- (2) 切换到当前目录的上一级目录
+$ cd ..
+当前目录：/usr
+
+-- (3) 切换到当前登录用户自己的主文件夹
+$ cd ~
+当前目录：/home/yxy
+
+────────────────────────────────────────────────────────────────────────
+【2】ls 命令：查看文件与目录
+────────────────────────────────────────────────────────────────────────
+-- 查看目录 /usr 下的所有文件和目录
+$ ls -l /usr
+总计 124
+drwxr-xr-x   2 nobody nogroup 49152 10月  1 23:49 bin
+drwxr-xr-x   2 nobody nogroup  4096  9月 11  2024 games
+drwxr-xr-x  44 nobody nogroup  4096 10月  1 23:49 include
+drwxr-xr-x 113 nobody nogroup  4096 10月  1 23:49 lib
+drwxr-xr-x   2 nobody nogroup  4096  9月 11  2024 lib32
+drwxr-xr-x   2 nobody nogroup  4096  5月 22 12:53 lib64
+drwxr-xr-x  23 nobody nogroup 12288  5月 22 12:17 libexec
+drwxr-xr-x   2 nobody nogroup  4096  9月 11  2024 libx32
+drwxr-xr-x  11 nobody nogroup  4096  9月  9 13:18 local
+drwxr-xr-x   2 nobody nogroup 20480 10月  1 23:45 sbin
+drwxr-xr-x 275 nobody nogroup 12288 10月  1 23:45 share
+drwxr-xr-x   4 nobody nogroup  4096  9月  9 11:13 src
+
+-- 等价的常用写法：ls /usr（只列名字，按列排列）
+$ ls /usr
+bin
+games
+include
+lib
+lib32
+lib64
+libexec
+libx32
+local
+sbin
+share
+src
+
+────────────────────────────────────────────────────────────────────────
+【3】mkdir 命令：新建目录
+────────────────────────────────────────────────────────────────────────
+-- (1) 进入 /tmp，创建目录 a，并查看 /tmp 下已经存在哪些目录
+$ cd /tmp
+当前目录：/tmp
+$ mkdir a
+$ ls -l /tmp        # 查看 /tmp 下已有的目录
+$ ls -l /tmp
+总计 0
+drwxrwxr-x 2 root root 40 10月  2 00:15 a
+
+-- (2) 进入 /tmp，创建目录 a1/a2/a3/a4（-p 递归创建）
+$ mkdir -p a1/a2/a3/a4
+$ find /tmp/a1 -type d
+/tmp/a1
+/tmp/a1/a2
+/tmp/a1/a2/a3
+/tmp/a1/a2/a3/a4
+
+────────────────────────────────────────────────────────────────────────
+【4】rmdir 命令：删除空的目录
+────────────────────────────────────────────────────────────────────────
+-- (1) 删除 /tmp 下上面创建的目录 a
+$ rmdir /tmp/a
+$ ls -d /tmp/a ; echo 删除后是否存在：$?
+ls: 无法访问 '/tmp/a': 没有那个文件或目录
+退出码=2 (非 0 表示已删除)
+
+-- (2) 删除目录 a1/a2/a3/a4，然后查看 /tmp 下还有哪些目录
+$ rmdir -p /tmp/a1/a2/a3/a4
+rmdir: 删除目录 '/tmp' 失败: 设备或资源忙
+$ ls -l /tmp
+$ ls -l /tmp
+总计 0
+
+────────────────────────────────────────────────────────────────────────
+【5】cp 命令：复制文件或目录
+────────────────────────────────────────────────────────────────────────
+-- (1) 把主文件夹下的 .bashrc 复制到 /usr 下，并重命名为 bashrc1
+$ cp /home/yxy/.bashrc /usr/bashrc1
+$ ls -l /usr/bashrc1
+-rw-r--r-- 1 root root 3968 10月  2 00:15 /usr/bashrc1
+
+-- (2) 在 /tmp 下新建目录 test，再把这个目录复制到 /usr 目录下
+$ mkdir /tmp/test
+$ cp -r /tmp/test /usr
+$ ls -ld /usr/test
+drwxrwxr-x 2 root root 40 10月  2 00:15 /usr/test
+
+────────────────────────────────────────────────────────────────────────
+【6】mv 命令：移动文件与目录，或更名
+────────────────────────────────────────────────────────────────────────
+-- (1) 把 /usr 目录下的文件 bashrc1 移动到 /usr/test 目录下
+$ mv /usr/bashrc1 /usr/test
+$ ls -l /usr/test
+总计 4
+-rw-r--r-- 1 root root 3968 10月  2 00:15 bashrc1
+
+-- (2) 把 /usr 目录下的 test 目录重命名为 test2
+$ mv /usr/test /usr/test2
+$ ls -ld /usr/test2
+drwxrwxr-x 2 root root 60 10月  2 00:15 /usr/test2
+
+────────────────────────────────────────────────────────────────────────
+【7】rm 命令：移除文件或目录
+────────────────────────────────────────────────────────────────────────
+-- (1) 把 /usr/test2 目录下的 bashrc1 文件删除
+$ rm /usr/test2/bashrc1
+$ ls -la /usr/test2
+总计 0
+drwxrwxr-x  2 root root  40 10月  2 00:15 .
+drwxrwxr-x 15 root root 300 10月  2 00:15 ..
+
+-- (2) 把 /usr 目录下的 test2 目录删除（-r 递归删除目录）
+$ rm -r /usr/test2
+$ ls -ld /usr/test2 ; echo 删除后是否存在：$?
+ls: 无法访问 '/usr/test2': 没有那个文件或目录
+退出码=2 (非 0 表示已删除)
+
+────────────────────────────────────────────────────────────────────────
+【8】cat 命令：查看文件内容
+────────────────────────────────────────────────────────────────────────
+$ cat ~/.bashrc
+$ cat /home/yxy/.bashrc
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+────────────────────────────────────────────────────────────────────────
+【9】tac 命令：反向查看文件内容
+────────────────────────────────────────────────────────────────────────
+$ tac ~/.bashrc      # 从最后一行往前显示
+$ tac /home/yxy/.bashrc
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+export NVM_DIR="$HOME/.nvm"
+
+fi
+  fi
+    . /etc/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+if ! shopt -oq posix; then
+# sources /etc/bash.bashrc).
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# enable programmable completion features (you don't need to enable
+
+fi
+    . ~/.bash_aliases
+if [ -f ~/.bash_aliases ]; then
+
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+# ~/.bash_aliases, instead of adding them here directly.
+# You may want to put all your additions into a separate file like
+# Alias definitions.
+
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+#   sleep 10; alert
+# Add an "alert" alias for long running commands.  Use like so:
+
+alias l='ls -CF'
+alias la='ls -A'
+alias ll='ls -alF'
+# some more ls aliases
+
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+# colored GCC warnings and errors
+
+fi
+    alias egrep='egrep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias grep='grep --color=auto'
+
+    #alias vdir='vdir --color=auto'
+    #alias dir='dir --color=auto'
+    alias ls='ls --color=auto'
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+if [ -x /usr/bin/dircolors ]; then
+# enable color support of ls and also add handy aliases
+
+esac
+    ;;
+*)
+    ;;
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+xterm*|rxvt*)
+case "$TERM" in
+# If this is an xterm set the title to user@host:dir
+
+unset color_prompt force_color_prompt
+fi
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+if [ "$color_prompt" = yes ]; then
+
+fi
+    fi
+	color_prompt=
+    else
+	color_prompt=yes
+	# a case would tend to support setf rather than setaf.)
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# We have color support; assume it's compliant with Ecma-48
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+if [ -n "$force_color_prompt" ]; then
+
+#force_color_prompt=yes
+# should be on the output of commands, not on the prompt
+# off by default to not distract the user: the focus in a terminal window
+# uncomment for a colored prompt, if the terminal has the capability; turned
+
+esac
+    xterm-color|*-256color) color_prompt=yes;;
+case "$TERM" in
+# set a fancy prompt (non-color, unless we know we "want" color)
+
+fi
+    debian_chroot=$(cat /etc/debian_chroot)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+# set variable identifying the chroot you work in (used in the prompt below)
+
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+# make less more friendly for non-text input files, see lesspipe(1)
+
+#shopt -s globstar
+# match all files and zero or more directories and subdirectories.
+# If set, the pattern "**" used in a pathname expansion context will
+
+shopt -s checkwinsize
+# update the values of LINES and COLUMNS.
+# check the window size after each command and, if necessary,
+
+HISTFILESIZE=2000
+HISTSIZE=1000
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+
+shopt -s histappend
+# append to the history file, don't overwrite it
+
+HISTCONTROL=ignoreboth
+# See bash(1) for more options
+# don't put duplicate lines or lines starting with space in the history.
+
+esac
+      *) return;;
+    *i*) ;;
+case $- in
+# If not running interactively, don't do anything
+
+# for examples
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# ~/.bashrc: executed by bash(1) for non-login shells.
+
+────────────────────────────────────────────────────────────────────────
+【10】more 命令：一页一页翻动查看
+────────────────────────────────────────────────────────────────────────
+说明：more 是交互式分页器，在终端里可用 空格(下一页)/Enter(下一行)/q(退出)。
+      在非交互脚本中它退化为一次性输出，这里用 more -n 限定页长以便观察分页效果。
+$ more -10 ~/.bashrc
+$ more -10 /home/yxy/.bashrc
+::::::::::::::
+/home/yxy/.bashrc
+::::::::::::::
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+────────────────────────────────────────────────────────────────────────
+【11】head 命令：取出前面几行
+────────────────────────────────────────────────────────────────────────
+-- (1) 查看 ~/.bashrc 前 20 行
+$ head -n 20 /home/yxy/.bashrc
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+-- (2) 查看 ~/.bashrc，后面 50 行不显示，只显示前面几行
+$ head -n -50 ~/.bashrc     # 负号表示“去掉末尾 50 行”
+$ head -n -50 /home/yxy/.bashrc
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+
+────────────────────────────────────────────────────────────────────────
+【12】tail 命令：取出后面几行
+────────────────────────────────────────────────────────────────────────
+-- (1) 查看 ~/.bashrc 最后 20 行
+$ tail -n 20 /home/yxy/.bashrc
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+-- (2) 查看 ~/.bashrc，并且只列出 50 行以后的数据
+$ tail -n +51 ~/.bashrc     # +51 表示从第 51 行开始输出到末尾
+$ tail -n +51 /home/yxy/.bashrc
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+────────────────────────────────────────────────────────────────────────
+【13】touch 命令：修改文件时间或创建新文件
+────────────────────────────────────────────────────────────────────────
+-- (1) 在 /tmp 下创建一个空文件 hello，并查看文件时间
+$ touch /tmp/hello
+$ ls -l --time-style=full-iso /tmp/hello
+-rw-rw-r-- 1 root root 0 2026-10-02 00:15:10.071338808 +0800 /tmp/hello
+$ stat /tmp/hello
+  文件：/tmp/hello
+  大小：0         	块：0          IO 块大小：4096   普通空文件
+设备：53h/83d	Inode：45          硬链接：1
+权限：(0664/-rw-rw-r--)  Uid: (    0/    root)   Gid: (    0/    root)
+访问时间：2026-10-02 00:15:10.071338808 +0800
+修改时间：2026-10-02 00:15:10.071338808 +0800
+变更时间：2026-10-02 00:15:10.071338808 +0800
+创建时间：2026-10-02 00:15:10.071338808 +0800
+
+-- (2) 修改 hello 文件，将文件时间整为 5 天前
+$ touch -d 5 days ago /tmp/hello
+$ ls -l --time-style=full-iso /tmp/hello
+-rw-rw-r-- 1 root root 0 2026-09-27 00:15:10.077386436 +0800 /tmp/hello
+$ date -d '5 days ago'
+2026年 09月 27日 星期日 00:15:10 CST
+
+────────────────────────────────────────────────────────────────────────
+【14】chown 命令：修改文件所有者权限
+────────────────────────────────────────────────────────────────────────
+-- 将 hello 文件所有者改为 root 帐号，并查看属性
+$ chown root /tmp/hello
+$ ls -l /tmp/hello
+-rw-rw-r-- 1 root root 0  9月 27 00:15 /tmp/hello
+$ stat -c '文件=%n 属主=%U 属组=%G 权限=%A' /tmp/hello
+文件=/tmp/hello 属主=root 属组=root 权限=-rw-rw-r--
+
+────────────────────────────────────────────────────────────────────────
+【15】find 命令：文件查找
+────────────────────────────────────────────────────────────────────────
+-- 找出主文件夹下文件名为 .bashrc 的文件
+$ find ~ -name .bashrc
+$ find /home/yxy -name .bashrc
+/home/yxy/.bashrc
+
+────────────────────────────────────────────────────────────────────────
+【16】tar 命令：压缩命令
+────────────────────────────────────────────────────────────────────────
+-- (1) 在根目录 / 下新建文件夹 test，然后在根目录 / 下打包成 test.tar.gz
+$ mkdir /test
+$ touch /test/file1.txt /test/file2.txt
+$ ls -l /test
+总计 0
+-rw-rw-r-- 1 root root 0 10月  2 00:15 file1.txt
+-rw-rw-r-- 1 root root 0 10月  2 00:15 file2.txt
+$ cd /
+当前目录：/
+$ tar -czf /test.tar.gz test
+$ ls -lh /test.tar.gz
+-rw-rw-r-- 1 root root 150 10月  2 00:15 /test.tar.gz
+$ tar -tzvf /test.tar.gz   # 查看压缩包内容
+$ tar -tzvf /test.tar.gz
+drwxrwxr-x root/root         0 2026-10-02 00:15 test/
+-rw-rw-r-- root/root         0 2026-10-02 00:15 test/file1.txt
+-rw-rw-r-- root/root         0 2026-10-02 00:15 test/file2.txt
+
+-- (2) 把上面的 test.tar.gz 压缩包解压缩到 /tmp 目录
+$ tar -xzf /test.tar.gz -C /tmp
+$ ls -l /tmp/test
+总计 0
+-rw-rw-r-- 1 root root 0 10月  2 00:15 file1.txt
+-rw-rw-r-- 1 root root 0 10月  2 00:15 file2.txt
+
+────────────────────────────────────────────────────────────────────────
+【17】grep 命令：查找字符串
+────────────────────────────────────────────────────────────────────────
+-- 从 ~/.bashrc 文件中查找字符串 'examples'
+$ grep -n 'examples' ~/.bashrc
+$ grep -n examples /home/yxy/.bashrc
+2:# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+3:# for examples
+102:# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+退出码=0 （0 表示找到匹配行）
+
+────────────────────────────────────────────────────────────────────────
+Linux 常用操作全部题目执行完毕。
+────────────────────────────────────────────────────────────────────────

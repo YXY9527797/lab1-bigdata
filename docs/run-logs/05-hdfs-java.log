@@ -1,0 +1,212 @@
+############################################################
+#  实验一 第 2 部分：HDFS 常用操作 —— Java API 实现
+#  HDFS 实验根目录: /user/yxy/hdfs-lab-java
+#  本地工作目录   : /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java
+#  执行时间       : 2026-10-02 00:21:15
+############################################################
+
+==================== 题目1-① 上传（目标不存在，直接上传） ====================
+【题目1】向 HDFS 上传文件（用户指定模式：overwrite）
+$ hdfs dfs -ls /user/yxy/hdfs-lab-java/upload.txt   # 判断目标文件是否已存在
+目标文件 /user/yxy/hdfs-lab-java/upload.txt 在 HDFS 中不存在
+$ hdfs dfs -put -f /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt /user/yxy/hdfs-lab-java/upload.txt
+已把 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt 【覆盖】上传到 /user/yxy/hdfs-lab-java/upload.txt
+上传后文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:16  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+
+==================== 题目1-② 上传（目标已存在，指定 overwrite 覆盖） ====================
+【题目1】向 HDFS 上传文件（用户指定模式：overwrite）
+$ hdfs dfs -ls /user/yxy/hdfs-lab-java/upload.txt   # 判断目标文件是否已存在
+目标文件 /user/yxy/hdfs-lab-java/upload.txt 在 HDFS 中已存在
+$ hdfs dfs -put -f /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt /user/yxy/hdfs-lab-java/upload.txt
+已把 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt 【覆盖】上传到 /user/yxy/hdfs-lab-java/upload.txt
+上传后文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:18  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+
+==================== 题目1-③ 上传（目标已存在，未指定模式 -> 由用户交互指定：这里输入 1 = 追加） ====================
+【题目1】向 HDFS 上传文件（已存在时交互式询问用户）
+$ hdfs dfs -ls /user/yxy/hdfs-lab-java/upload.txt   # 判断目标文件是否已存在
+目标文件 /user/yxy/hdfs-lab-java/upload.txt 在 HDFS 中已存在
+目标文件 /user/yxy/hdfs-lab-java/upload.txt 已存在，请选择处理方式：
+  [1] 追加到原有文件末尾 (append)
+  [2] 覆盖原有的文件       (overwrite)
+请输入 1 或 2：$ FileSystem.append(new Path("/user/yxy/hdfs-lab-java/upload.txt"))   # 以追加方式打开
+已把 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/more.txt 的内容【追加】到 /user/yxy/hdfs-lab-java/upload.txt 末尾
+上传后文件状态：rw-r--r--  yxy               120  2026-10-02 00:21:20  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+
+==================== 题目2-① 下载（本地无同名文件） ====================
+【题目2】从 HDFS 下载文件（本地同名则自动重命名）
+$ hdfs dfs -get /user/yxy/hdfs-lab-java/upload.txt /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/download/upload.txt
+已下载到本地：/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/download/upload.txt（120 字节）
+
+==================== 题目2-② 下载（本地已有同名文件 -> 自动重命名） ====================
+【题目2】从 HDFS 下载文件（本地同名则自动重命名）
+本地已存在同名文件 upload.txt，自动重命名为：upload.txt.1
+$ hdfs dfs -get /user/yxy/hdfs-lab-java/upload.txt /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/download/upload.txt.1
+已下载到本地：/home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/download/upload.txt.1（120 字节）
+-- 本地下载目录内容：
+总计 8
+-rw-r--r-- 1 yxy yxy 120 10月  2 00:21 upload.txt
+-rw-r--r-- 1 yxy yxy 120 10月  2 00:21 upload.txt.1
+
+==================== 题目3 把 HDFS 中指定文件的内容输出到终端 ====================
+【题目3】把 HDFS 文件内容输出到终端
+$ hdfs dfs -cat /user/yxy/hdfs-lab-java/upload.txt
+Hello HDFS
+大数据系统基本实验
+实验一 第 2 部分
+===== 用户选择「追加」时写入的这一行 =====
+
+
+==================== 题目4 显示指定文件的权限、大小、创建时间、路径 ====================
+【题目4】显示 HDFS 文件的权限/大小/创建时间/路径
+$ hdfs dfs -ls /user/yxy/hdfs-lab-java/upload.txt
+【题目4】文件详细信息
+权限         属主             大小(字节)  创建/修改时间              路径
+--------------------------------------------------------------------------
+rw-r--r--  yxy               120  2026-10-02 00:21:20  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+
+==================== 题目5 递归显示指定目录下所有文件的信息 ====================
+【题目5】递归显示 HDFS 目录下所有文件的信息
+$ hdfs dfs -ls -R /user/yxy/hdfs-lab-java
+【题目5】目录 /user/yxy/hdfs-lab-java 下所有文件的详细信息（递归）
+权限         属主             大小(字节)  创建/修改时间              路径
+--------------------------------------------------------------------------
+rw-r--r--  yxy               120  2026-10-02 00:21:20  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+--------------------------------------------------------------------------
+共 1 个条目，其中文件 1 个。
+
+==================== 题目6-① 创建文件（所在目录不存在 -> 自动创建目录） ====================
+【题目6】HDFS 文件创建/删除（父目录不存在则自动创建）
+$ hdfs dfs -mkdir -p /user/yxy/hdfs-lab-java/newdir1/newdir2   # 文件所在目录不存在，自动创建
+已自动创建父目录：/user/yxy/hdfs-lab-java/newdir1/newdir2
+$ hdfs dfs -touchz /user/yxy/hdfs-lab-java/newdir1/newdir2/created.txt   # 等价于 FileSystem.create(path)
+已创建文件：/user/yxy/hdfs-lab-java/newdir1/newdir2/created.txt
+文件状态：rw-r--r--  yxy                 0  2026-10-02 00:21:29  hdfs://localhost:9000/user/yxy/hdfs-lab-java/newdir1/newdir2/created.txt
+
+==================== 题目6-② 删除该文件 ====================
+【题目6】HDFS 文件创建/删除（父目录不存在则自动创建）
+$ hdfs dfs -rm /user/yxy/hdfs-lab-java/newdir1/newdir2/created.txt
+已删除文件：/user/yxy/hdfs-lab-java/newdir1/newdir2/created.txt
+
+==================== 题目6-③ 删除一个不存在的文件 ====================
+【题目6】HDFS 文件创建/删除（父目录不存在则自动创建）
+文件不存在，无需删除：/user/yxy/hdfs-lab-java/no-such-file.txt
+
+==================== 题目7-① 创建目录（父目录不存在 -> 自动创建） ====================
+【题目7】HDFS 目录创建/删除（目录非空时不删除）
+$ hdfs dfs -mkdir -p /user/yxy/hdfs-lab-java/emptydir
+已创建目录：/user/yxy/hdfs-lab-java/emptydir
+目录状态：rwxr-xr-x  yxy                 0  2026-10-02 00:21:34  hdfs://localhost:9000/user/yxy/hdfs-lab-java/emptydir
+
+==================== 题目7-② 删除空目录（应当删除成功） ====================
+【题目7】HDFS 目录创建/删除（目录非空时不删除）
+$ hdfs dfs -rmdir /user/yxy/hdfs-lab-java/emptydir   # 目录为空，可以删除
+已删除空目录：/user/yxy/hdfs-lab-java/emptydir
+
+==================== 题目7-③ 造一个非空目录 ====================
+【题目7】HDFS 目录创建/删除（目录非空时不删除）
+$ hdfs dfs -mkdir -p /user/yxy/hdfs-lab-java/nonempty/sub
+已创建目录：/user/yxy/hdfs-lab-java/nonempty/sub
+目录状态：rwxr-xr-x  yxy                 0  2026-10-02 00:21:37  hdfs://localhost:9000/user/yxy/hdfs-lab-java/nonempty/sub
+【题目1】向 HDFS 上传文件（用户指定模式：overwrite）
+$ hdfs dfs -ls /user/yxy/hdfs-lab-java/nonempty/sub/keep.txt   # 判断目标文件是否已存在
+目标文件 /user/yxy/hdfs-lab-java/nonempty/sub/keep.txt 在 HDFS 中不存在
+$ hdfs dfs -put -f /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt /user/yxy/hdfs-lab-java/nonempty/sub/keep.txt
+已把 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt 【覆盖】上传到 /user/yxy/hdfs-lab-java/nonempty/sub/keep.txt
+上传后文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:39  hdfs://localhost:9000/user/yxy/hdfs-lab-java/nonempty/sub/keep.txt
+
+==================== 题目7-④ 删除非空目录（按要求不删除） ====================
+【题目7】HDFS 目录创建/删除（目录非空时不删除）
+目录 /user/yxy/hdfs-lab-java/nonempty 非空（含 1 个子项），按要求【不删除】：
+    rwxr-xr-x  yxy                 0  2026-10-02 00:21:39  hdfs://localhost:9000/user/yxy/hdfs-lab-java/nonempty/sub
+
+==================== 题目8-① 追加内容到文件【末尾】 ====================
+【题目8】向 HDFS 文件追加内容（用户指定追加到开头或结尾）
+追加前内容（60 字符）：
+--------------------------------------------------
+Hello HDFS
+大数据系统基本实验
+实验一 第 2 部分
+===== 用户选择「追加」时写入的这一行 =====
+--------------------------------------------------
+追加位置：文件末尾（使用 FileSystem.append()）
+$ FileSystem.append(new Path("/user/yxy/hdfs-lab-java/upload.txt"))
+追加后内容（79 字符）：
+--------------------------------------------------
+Hello HDFS
+大数据系统基本实验
+实验一 第 2 部分
+===== 用户选择「追加」时写入的这一行 =====
+>>> 这一行追加在文件末尾 <<<
+--------------------------------------------------
+追加后文件状态：rw-r--r--  yxy               159  2026-10-02 00:21:42  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+
+==================== 题目8-② 追加内容到文件【开头】 ====================
+【题目8】向 HDFS 文件追加内容（用户指定追加到开头或结尾）
+追加前内容（79 字符）：
+--------------------------------------------------
+Hello HDFS
+大数据系统基本实验
+实验一 第 2 部分
+===== 用户选择「追加」时写入的这一行 =====
+>>> 这一行追加在文件末尾 <<<
+--------------------------------------------------
+追加位置：文件开头（HDFS 的 append 只能追加到末尾，
+          因此这里读出原内容后删除文件，再按“新内容+原内容”重建）
+$ hdfs dfs -rm /user/yxy/hdfs-lab-java/upload.txt        # 先删除
+$ hdfs dfs -put -   # 新建文件并写入：新内容 + 原内容
+追加后内容（98 字符）：
+--------------------------------------------------
+>>> 这一行追加在文件开头 <<<
+Hello HDFS
+大数据系统基本实验
+实验一 第 2 部分
+===== 用户选择「追加」时写入的这一行 =====
+>>> 这一行追加在文件末尾 <<<
+--------------------------------------------------
+追加后文件状态：rw-r--r--  yxy               198  2026-10-02 00:21:44  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+
+==================== 题目9 删除 HDFS 中指定的文件 ====================
+【题目1】向 HDFS 上传文件（用户指定模式：overwrite）
+$ hdfs dfs -ls /user/yxy/hdfs-lab-java/todelete.txt   # 判断目标文件是否已存在
+目标文件 /user/yxy/hdfs-lab-java/todelete.txt 在 HDFS 中不存在
+$ hdfs dfs -put -f /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt /user/yxy/hdfs-lab-java/todelete.txt
+已把 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt 【覆盖】上传到 /user/yxy/hdfs-lab-java/todelete.txt
+上传后文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:46  hdfs://localhost:9000/user/yxy/hdfs-lab-java/todelete.txt
+【题目9】删除 HDFS 中指定的文件
+删除前文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:46  hdfs://localhost:9000/user/yxy/hdfs-lab-java/todelete.txt
+$ hdfs dfs -rm /user/yxy/hdfs-lab-java/todelete.txt
+已删除文件：/user/yxy/hdfs-lab-java/todelete.txt
+删除后该路径是否存在：false
+
+==================== 题目10 把文件从源路径移动到目的路径 ====================
+【题目1】向 HDFS 上传文件（用户指定模式：overwrite）
+$ hdfs dfs -ls /user/yxy/hdfs-lab-java/mv-src.txt   # 判断目标文件是否已存在
+目标文件 /user/yxy/hdfs-lab-java/mv-src.txt 在 HDFS 中不存在
+$ hdfs dfs -put -f /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt /user/yxy/hdfs-lab-java/mv-src.txt
+已把 /home/yxy/文档/deepseek-harness/default-workspace/lab1-bigdata/part2-hdfs/local-java/input.txt 【覆盖】上传到 /user/yxy/hdfs-lab-java/mv-src.txt
+上传后文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:49  hdfs://localhost:9000/user/yxy/hdfs-lab-java/mv-src.txt
+【题目10】把 HDFS 文件从源路径移动到目的路径
+移动前源文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:49  hdfs://localhost:9000/user/yxy/hdfs-lab-java/mv-src.txt
+$ hdfs dfs -mkdir -p /user/yxy/hdfs-lab-java/mvdir   # 目的目录不存在，自动创建
+已自动创建目的目录：/user/yxy/hdfs-lab-java/mvdir
+$ hdfs dfs -mv /user/yxy/hdfs-lab-java/mv-src.txt /user/yxy/hdfs-lab-java/mvdir/mv-dst.txt
+移动完成：/user/yxy/hdfs-lab-java/mv-src.txt  ->  /user/yxy/hdfs-lab-java/mvdir/mv-dst.txt
+源路径是否还存在：false
+目的文件状态：rw-r--r--  yxy                62  2026-10-02 00:21:49  hdfs://localhost:9000/user/yxy/hdfs-lab-java/mvdir/mv-dst.txt
+
+==================== 收尾：最终 HDFS 实验目录结构 ====================
+【题目5】递归显示 HDFS 目录下所有文件的信息
+$ hdfs dfs -ls -R /user/yxy/hdfs-lab-java
+【题目5】目录 /user/yxy/hdfs-lab-java 下所有文件的详细信息（递归）
+权限         属主             大小(字节)  创建/修改时间              路径
+--------------------------------------------------------------------------
+rwxr-xr-x  yxy                 0  2026-10-02 00:21:50  hdfs://localhost:9000/user/yxy/hdfs-lab-java/mvdir
+rw-r--r--  yxy                62  2026-10-02 00:21:49  hdfs://localhost:9000/user/yxy/hdfs-lab-java/mvdir/mv-dst.txt
+rwxr-xr-x  yxy                 0  2026-10-02 00:21:29  hdfs://localhost:9000/user/yxy/hdfs-lab-java/newdir1
+rwxr-xr-x  yxy                 0  2026-10-02 00:21:31  hdfs://localhost:9000/user/yxy/hdfs-lab-java/newdir1/newdir2
+rwxr-xr-x  yxy                 0  2026-10-02 00:21:37  hdfs://localhost:9000/user/yxy/hdfs-lab-java/nonempty
+rwxr-xr-x  yxy                 0  2026-10-02 00:21:39  hdfs://localhost:9000/user/yxy/hdfs-lab-java/nonempty/sub
+rw-r--r--  yxy                62  2026-10-02 00:21:39  hdfs://localhost:9000/user/yxy/hdfs-lab-java/nonempty/sub/keep.txt
+rw-r--r--  yxy               198  2026-10-02 00:21:44  hdfs://localhost:9000/user/yxy/hdfs-lab-java/upload.txt
+--------------------------------------------------------------------------
+共 8 个条目，其中文件 3 个。

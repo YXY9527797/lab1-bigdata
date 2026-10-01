@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  hdfs-site.xml —— HDFS 相关配置（单节点伪分布式）
+  dfs.replication = 1：单机只有一个 DataNode，副本数只能为 1
+-->
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+  <!-- NameNode 元数据（fsimage/editlog）存放目录 -->
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file://@LAB_ROOT@/env/hadoopdata/name</value>
+  </property>
+  <!-- DataNode 实际数据块存放目录 -->
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file://@LAB_ROOT@/env/hadoopdata/data</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>localhost:9870</value>
+  </property>
+  <property>
+    <name>dfs.datanode.http-address</name>
+    <value>localhost:9864</value>
+  </property>
+  <!-- 单个副本的块大小 128MB -->
+  <property>
+    <name>dfs.blocksize</name>
+    <value>134217728</value>
+  </property>
+</configuration>
